@@ -19,9 +19,6 @@ dependencies:
   '@fortawesome/react-fontawesome':
     specifier: ^0.2.0
     version: 0.2.0(@fortawesome/fontawesome-svg-core@6.4.0)(react@18.2.0)
-  '@next/font':
-    specifier: 13.1.6
-    version: 13.1.6
   '@rematch/core':
     specifier: ^2.2.0
     version: 2.2.0(redux@4.2.1)
@@ -59,7 +56,11 @@ dependencies:
     specifier: ^0.1.1
     version: 0.1.1
   next:
+<<<<<<< Updated upstream
     specifier: 13.4.2
+=======
+    specifier: ^13.4.2
+>>>>>>> Stashed changes
     version: 13.4.2(@babel/core@7.21.8)(react-dom@18.2.0)(react@18.2.0)(sass@1.62.1)
   next-auth:
     specifier: ^4.19.2
@@ -1581,10 +1582,13 @@ packages:
       glob: 7.1.7
     dev: false
 
+<<<<<<< Updated upstream
   /@next/font@13.1.6:
     resolution: {integrity: sha512-AITjmeb1RgX1HKMCiA39ztx2mxeAyxl4ljv2UoSBUGAbFFMg8MO7YAvjHCgFhD39hL7YTbFjol04e/BPBH5RzQ==}
     dev: false
 
+=======
+>>>>>>> Stashed changes
   /@next/swc-darwin-arm64@13.4.2:
     resolution: {integrity: sha512-6BBlqGu3ewgJflv9iLCwO1v1hqlecaIH2AotpKfVUEzUxuuDNJQZ2a4KLb4MBl8T9/vca1YuWhSqtbF6ZuUJJw==}
     engines: {node: '>= 10'}
