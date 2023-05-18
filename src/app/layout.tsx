@@ -1,4 +1,11 @@
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+
+// App custom global styles
 import "./globals.css";
+
+// Blocks the insertion of style tag in the HTML
+config.autoAddCss = false;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
