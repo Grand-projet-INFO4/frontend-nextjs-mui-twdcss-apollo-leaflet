@@ -19,6 +19,15 @@ dependencies:
   '@fortawesome/react-fontawesome':
     specifier: ^0.2.0
     version: 0.2.0(@fortawesome/fontawesome-svg-core@6.4.0)(react@18.2.0)
+  '@fullcalendar/core':
+    specifier: ^6.1.7
+    version: 6.1.7
+  '@fullcalendar/daygrid':
+    specifier: ^6.1.7
+    version: 6.1.7(@fullcalendar/core@6.1.7)
+  '@fullcalendar/react':
+    specifier: ^6.1.7
+    version: 6.1.7(@fullcalendar/core@6.1.7)(react-dom@18.2.0)(react@18.2.0)
   '@rematch/core':
     specifier: ^2.2.0
     version: 2.2.0(redux@4.2.1)
@@ -56,11 +65,7 @@ dependencies:
     specifier: ^0.1.1
     version: 0.1.1
   next:
-<<<<<<< Updated upstream
-    specifier: 13.4.2
-=======
     specifier: ^13.4.2
->>>>>>> Stashed changes
     version: 13.4.2(@babel/core@7.21.8)(react-dom@18.2.0)(react@18.2.0)(sass@1.62.1)
   next-auth:
     specifier: ^4.19.2
@@ -1516,6 +1521,32 @@ packages:
       react: 18.2.0
     dev: false
 
+  /@fullcalendar/core@6.1.7:
+    resolution: {integrity: sha512-Hc63ARSyABlNo10B3NkA0z8ndaDmq5MKpcBB2iQsGQyn8N8cyn/x6V284Je1EwDoKsBlbrZAj+j+efBO+QQf5g==}
+    dependencies:
+      preact: 10.12.1
+    dev: false
+
+  /@fullcalendar/daygrid@6.1.7(@fullcalendar/core@6.1.7):
+    resolution: {integrity: sha512-IB+QdRcs+TeTlsK8qJFtYZ/2GugmXEFC0C00/n1aLT7GLgFn3ueV1GN0EKvXv9HJ5ai8My65mYbSyQizY/Ishw==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.7
+    dependencies:
+      '@fullcalendar/core': 6.1.7
+    dev: false
+
+  /@fullcalendar/react@6.1.7(@fullcalendar/core@6.1.7)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-Pwe88D4zXwP/XQsYWOa1foroF/OpHSLet5CiE4crnaKvngEtzt3SBDIO01agQOpo+yE1KM/n3yE5ePbdJtVJIQ==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.7
+      react: ^16.7.0 || ^17 || ^18
+      react-dom: ^16.7.0 || ^17 || ^18
+    dependencies:
+      '@fullcalendar/core': 6.1.7
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /@graphql-typed-document-node/core@3.2.0(graphql@16.6.0):
     resolution: {integrity: sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==}
     peerDependencies:
@@ -1582,13 +1613,6 @@ packages:
       glob: 7.1.7
     dev: false
 
-<<<<<<< Updated upstream
-  /@next/font@13.1.6:
-    resolution: {integrity: sha512-AITjmeb1RgX1HKMCiA39ztx2mxeAyxl4ljv2UoSBUGAbFFMg8MO7YAvjHCgFhD39hL7YTbFjol04e/BPBH5RzQ==}
-    dev: false
-
-=======
->>>>>>> Stashed changes
   /@next/swc-darwin-arm64@13.4.2:
     resolution: {integrity: sha512-6BBlqGu3ewgJflv9iLCwO1v1hqlecaIH2AotpKfVUEzUxuuDNJQZ2a4KLb4MBl8T9/vca1YuWhSqtbF6ZuUJJw==}
     engines: {node: '>= 10'}
@@ -3979,6 +4003,10 @@ packages:
     dependencies:
       preact: 10.14.1
       pretty-format: 3.8.0
+    dev: false
+
+  /preact@10.12.1:
+    resolution: {integrity: sha512-l8386ixSsBdbreOAkqtrwqHwdvR35ID8c3rKPa8lCWuO86dBi32QWHV4vfsZK1utLLFMvw+Z5Ad4XLkZzchscg==}
     dev: false
 
   /preact@10.14.1:
