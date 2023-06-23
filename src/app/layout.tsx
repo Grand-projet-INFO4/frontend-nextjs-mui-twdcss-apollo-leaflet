@@ -1,13 +1,13 @@
-import { config } from "@fortawesome/fontawesome-svg-core";
-import "@fortawesome/fontawesome-svg-core/styles.css";
+import { Metadata } from "next";
 
-// App custom global styles
 import "./globals.css";
+import Providers from "./Providers";
+import { InitialAuthStateSetup } from "@/features/auth/components";
+import { getServerSession } from "@/lib/next-auth";
 
-// Blocks the insertion of style tag in the HTML
-config.autoAddCss = false;
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession();
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       {/*
@@ -15,11 +15,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
       */}
       <head />
-      <body suppressHydrationWarning={true}>{children}</body>
+      <body suppressHydrationWarning={true}>
+        <Providers>
+          <InitialAuthStateSetup initialSession={session} />
+          <div className="main-body">{children}</div>
+        </Providers>
+      </body>
     </html>
   );
 }
 
-export const metadata = {
-  title: "Zaha dia",
+export const metadata: Metadata = {
+  title: "Taskify",
 };
