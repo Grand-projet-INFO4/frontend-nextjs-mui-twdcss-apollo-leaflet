@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SignInButton } from "../features/auth/components";
+import SignInButton from "../features/auth/components/SignInButton";
 
 export default async function HomePage() {
   return (

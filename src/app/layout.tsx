@@ -2,12 +2,8 @@ import { Metadata } from "next";
 
 import "./globals.css";
 import Providers from "./Providers";
-import { InitialAuthStateSetup } from "@/features/auth/components";
-import { getServerSession } from "@/lib/next-auth";
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const session = await getServerSession();
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       {/*
@@ -17,7 +13,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head />
       <body suppressHydrationWarning={true}>
         <Providers>
-          <InitialAuthStateSetup initialSession={session} />
           <div className="main-body">{children}</div>
         </Providers>
       </body>

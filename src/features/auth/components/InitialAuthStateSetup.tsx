@@ -9,19 +9,15 @@ import { GetMeQuery } from "@/graphql/graphql";
 import { useDispatch } from "@/lib/rematch";
 import { GET_ME_QUERY } from "../auth.operations";
 import { ACCESS_TOKEN_EXPIRATION_OFFSET } from "../auth.constants";
-import { useComponentDidMount } from "@/hooks";
-
-export interface InitialAuthStateSetupProps {
-  initialSession: Session | null;
-}
+import useComponentDidMount from "@/hooks/useComponentDidMount";
 
 // Sets up the authentication state when the application mounts
-export default function InitialAuthStateSetup({ initialSession }: InitialAuthStateSetupProps) {
+export default function InitialAuthStateSetup() {
   const { data: session, update: updateSession } = useSession();
 
   const dispatch = useDispatch();
 
-  const isAuthenticated = initialSession !== null && initialSession !== undefined;
+  const isAuthenticated = session !== null && session !== undefined;
 
   useComponentDidMount(() => {
     // If the user is initially not authenticated,
@@ -31,12 +27,12 @@ export default function InitialAuthStateSetup({ initialSession }: InitialAuthSta
         hasFetched: true,
       });
     } else {
-      // We immediataly set the tokens dat from the initial session
+      // We immediataly set the tokens data from the initial session
       dispatch.auth.setAuthenticationState({
         isAuthenticated: true,
-        accessToken: initialSession.accessToken,
-        refreshToken: initialSession.refreshToken,
-        expiresAt: initialSession.expiresAt,
+        accessToken: session.accessToken,
+        refreshToken: session.refreshToken,
+        expiresAt: session.expiresAt,
       });
     }
 
@@ -44,6 +40,7 @@ export default function InitialAuthStateSetup({ initialSession }: InitialAuthSta
     dispatch.auth.setCsrfToken();
   });
 
+  // Updating the authentication data whenever the session data changes
   useEffect(() => {
     if (session && session.expiresAt) {
       // Updating the tokens data in the store

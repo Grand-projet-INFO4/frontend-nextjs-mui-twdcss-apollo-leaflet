@@ -98,8 +98,6 @@ As for the location, components are scattered across differents directories. In 
 
 For the file naming convention, components' names are written in **PascalCase** and use the `.tsx` extension.
 
-Components are exported using the **_barrel export pattern_**. Only the components that are meant to exposed should be exported.
-
 ## Hooks
 
 In a React application, we often need to write our own **_custom hooks_** where we encapsulate a component's business logic into a seperate function for the sake of readability and reusability.
@@ -107,8 +105,6 @@ In a React application, we often need to write our own **_custom hooks_** where 
 If a custom React hook is **related to a specific feature**, then they are stored within that feature which means in one of the `features/**/hooks` or the `shared/**/hooks` directories. However, if a custom hook is **not related to any specific feature** and is reusable across all components, it is stored within the `hooks` directory.
 
 Hooks' filenames start with the `use` keywork and are written in **camelCase**. For example, a hook that implements `componentDidMount` lifecycle hook can be named as `useComponentDidMount.ts`.
-
-Hooks are exported using the **_barrel export pattern_**.
 
 ## Configurations
 
