@@ -62,7 +62,13 @@ export default function InitialAuthStateSetup() {
         // If the current user is not authenticated,
         // then we can set the authentication state as being fetched
         // and the authenticated user to null
-        dispatch.auth.setAuthenticationState({ authUser: null, hasFetched: true });
+        dispatch.auth.setAuthenticationState({
+          authUser: null,
+          accessToken: null,
+          refreshToken: null,
+          expiresAt: null,
+          hasFetched: true,
+        });
       }
     }
   }, [status]);
