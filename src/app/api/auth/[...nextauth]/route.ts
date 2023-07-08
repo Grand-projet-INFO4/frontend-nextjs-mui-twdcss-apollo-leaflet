@@ -3,9 +3,16 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import { substractDate } from "@/utils/date-time.utils";
 import { ACCESS_TOKEN_EXPIRATION_OFFSET, SIGNIN_PAGE_PATH } from "@/features/auth/auth.constants";
-import { getClient } from "@/lib/apollo";
-import { RefreshTokenMutation, SignInMutation, SignInMutationVariables } from "@/graphql/graphql";
-import { REFRESH_TOKEN_MUTATION, SIGN_IN_MUTATION } from "@/features/auth/auth.operations";
+import { getClient } from "@/lib/apollo/server";
+import {
+  REFRESH_TOKEN_MUTATION,
+  RefreshTokenMutation,
+} from "@/features/auth/operations/refresh-token.mutation";
+import {
+  SIGN_IN_MUTATION,
+  SignInMutation,
+  SignInMutationVariables,
+} from "@/features/auth/operations/sign-in.mutation";
 
 /**
  * Signs in a user to the GraphQL API using the email/password credentials
@@ -55,6 +62,7 @@ export const authOptions: AuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials) return null;
+        console.log({ Environment: typeof window === undefined ? "Server" : "Browser" });
         const authResult = await signIn(credentials.email, credentials.password);
         if (!authResult) return null;
         // The user id, access token and refresh token from authentication

@@ -3,12 +3,15 @@ import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from "@apollo/clien
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import { registerApolloClient } from "@apollo/experimental-nextjs-app-support/rsc";
-import { getServerSession } from "next-auth";
 
 import { BACKEND_GRAPHQL_URL } from "@/config/urls.config";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { SigninRedirectionReason } from "@/features/auth/auth.constants";
+import {
+  FORBIDDEN_PAGE_PATH,
+  SIGNIN_PAGE_PATH,
+  SigninRedirectionReason,
+} from "@/features/auth/auth.constants";
 import { REDIRECTION_REASON_QUERY_PARAM } from "@/constants/redirection.constants";
+import { getServerSession } from "../../next-auth";
 
 // Options passed to the apollo client instance getter
 export interface ServerClientOptions {
@@ -46,12 +49,11 @@ export function getClient(options: ServerClientOptions = {}) {
         let token: string;
 
         if (auth) {
-          const session = await getServerSession(authOptions);
+          const session = await getServerSession();
 
           // If there's no session (not authenticated), the user must be redirected to the sign in page
           if (!session) {
-            const reason: SigninRedirectionReason = SigninRedirectionReason.Unauthenticated;
-            const toSignin = `/signin?${REDIRECTION_REASON_QUERY_PARAM}=${reason}`;
+            const toSignin = `${SIGNIN_PAGE_PATH}?${REDIRECTION_REASON_QUERY_PARAM}=${SigninRedirectionReason.Unauthenticated}`;
             redirect(toSignin);
             return;
           }
@@ -79,15 +81,15 @@ export function getClient(options: ServerClientOptions = {}) {
           const { message, locations, path, extensions } = error;
           console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
 
-          // Whether the user should be redirected to the sign in page
-          let shouldSignIn = false;
+          // Whether the user should be redirected to the forbidden page
+          let isForbidden = false;
 
           switch (extensions.code) {
             // If the request is unauthorized and the operation is not the sign in operation,
-            // then the user should re-sign in again
+            // then the user should be redirected to the forbidden page
             case "FORBIDDEN": {
               if (operation.operationName !== "SignIn") {
-                shouldSignIn = true;
+                isForbidden = true;
               }
               break;
             }
@@ -103,10 +105,9 @@ export function getClient(options: ServerClientOptions = {}) {
               break;
           }
 
-          if (shouldSignIn) {
-            const reason: SigninRedirectionReason = SigninRedirectionReason.Unauthorized;
-            const toSignin = `/signin?${REDIRECTION_REASON_QUERY_PARAM}=${reason}`;
-            redirect(toSignin);
+          if (isForbidden) {
+            const toForbidden = `/${FORBIDDEN_PAGE_PATH}?${REDIRECTION_REASON_QUERY_PARAM}=${SigninRedirectionReason.Unauthorized}`;
+            redirect(toForbidden);
             break;
           }
         }

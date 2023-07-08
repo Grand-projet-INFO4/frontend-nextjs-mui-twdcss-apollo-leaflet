@@ -1,41 +1,21 @@
 "use client";
 
-import { useQuery } from "@apollo/client";
-import { Session } from "next-auth";
+import { useLazyQuery } from "@apollo/client";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 
-import { GetMeQuery } from "@/graphql/graphql";
 import { useDispatch } from "@/lib/rematch";
-import { GET_ME_QUERY } from "../auth.operations";
+import { GET_ME_QUERY, GetMeQuery } from "../operations/get-me.query";
 import { ACCESS_TOKEN_EXPIRATION_OFFSET } from "../auth.constants";
 import useComponentDidMount from "@/hooks/useComponentDidMount";
 
 // Sets up the authentication state when the application mounts
 export default function InitialAuthStateSetup() {
-  const { data: session, update: updateSession } = useSession();
+  const { data: session, status, update: updateSession } = useSession();
 
   const dispatch = useDispatch();
 
-  const isAuthenticated = session !== null && session !== undefined;
-
   useComponentDidMount(() => {
-    // If the user is initially not authenticated,
-    // then there's no data to fetch and the authentication state remains as not authenticated
-    if (!isAuthenticated) {
-      dispatch.auth.setAuthenticationState({
-        hasFetched: true,
-      });
-    } else {
-      // We immediataly set the tokens data from the initial session
-      dispatch.auth.setAuthenticationState({
-        isAuthenticated: true,
-        accessToken: session.accessToken,
-        refreshToken: session.refreshToken,
-        expiresAt: session.expiresAt,
-      });
-    }
-
     // Setting the CSRF token
     dispatch.auth.setCsrfToken();
   });
@@ -61,8 +41,7 @@ export default function InitialAuthStateSetup() {
   }, [session?.expiresAt]);
 
   // Only fetching the current user if the user is authenticated
-  useQuery<GetMeQuery>(GET_ME_QUERY, {
-    skip: !isAuthenticated,
+  const [getMe] = useLazyQuery<GetMeQuery>(GET_ME_QUERY, {
     onCompleted(data) {
       const { me } = data;
       // Set the authenticated user in the store
@@ -72,6 +51,21 @@ export default function InitialAuthStateSetup() {
       });
     },
   });
+
+  useEffect(() => {
+    if (status !== "loading") {
+      // The session data has been fetched
+      if (status === "authenticated") {
+        // If the current user is authenticated, then we can fetch the authenticated user's data
+        getMe();
+      } else {
+        // If the current user is not authenticated,
+        // then we can set the authentication state as being fetched
+        // and the authenticated user to null
+        dispatch.auth.setAuthenticationState({ authUser: null, hasFetched: true });
+      }
+    }
+  }, [status]);
 
   return null;
 }

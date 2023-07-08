@@ -6,7 +6,7 @@ import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 
 import { BACKEND_GRAPHQL_URL } from "@/config/urls.config";
-import { store } from "../rematch";
+import { store } from "../../rematch";
 
 type GqlException = {
   status?: number;
@@ -21,14 +21,17 @@ function makeClient() {
   });
 
   // Authorization link
-  const authLink = setContext(async (_, { headers }) => {
+  const authLink = setContext(async (_, { headers: prevHeaders }) => {
     // The access token must already be available because of the auth state initialization
-    let accessToken = store.getState().auth.accessToken as string;
+    let accessToken = store.getState().auth.accessToken;
+    const headers: any = {
+      ...prevHeaders,
+    };
+    if (accessToken) {
+      headers.Authorization = `Bearer ${accessToken}`;
+    }
     return {
-      headers: {
-        ...headers,
-        Authorization: `Bearer ${accessToken}`,
-      },
+      headers,
     };
   });
 

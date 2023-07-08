@@ -1,17 +1,17 @@
 import { PropsWithChildren } from "react";
 
 import { StoreProvider } from "@/lib/rematch";
-import ApolloWrapper from "@/lib/apollo/ApolloWrapper";
-import { getServerSession } from "@/lib/next-auth";
+import ApolloWrapper from "@/lib/apollo/client/ApolloWrapper";
 import NextAuthProvider from "@/lib/next-auth/NextAuthProvider";
+import MUISetup from "@/lib/mui/MUISetup";
 
 export default async function Providers({ children }: PropsWithChildren) {
-  const session = await getServerSession();
-
   return (
     <ApolloWrapper>
       <StoreProvider>
-        <NextAuthProvider session={session}>{children}</NextAuthProvider>
+        <NextAuthProvider>
+          <MUISetup>{children}</MUISetup>
+        </NextAuthProvider>
       </StoreProvider>
     </ApolloWrapper>
   );

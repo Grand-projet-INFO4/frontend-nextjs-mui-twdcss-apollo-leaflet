@@ -2,18 +2,19 @@ import { Metadata } from "next";
 
 import "./globals.css";
 import Providers from "./Providers";
+import Navbar from "./Navbar";
+import InitialAuthStateSetup from "@/features/auth/components/InitialAuthStateSetup";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      {/*
-        <head /> will contain the components returned by the nearest parent
-        head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
-      */}
-      <head />
       <body suppressHydrationWarning={true}>
         <Providers>
-          <div className="main-body">{children}</div>
+          <InitialAuthStateSetup />
+          <div className="main-body">
+            {/* <Navbar /> */}
+            {children}
+          </div>
         </Providers>
       </body>
     </html>
@@ -21,5 +22,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 
 export const metadata: Metadata = {
-  title: "Taskify",
+  title: "Zaha-Dia | Facilitez les voyages en taxi-brousse",
 };

@@ -1,14 +1,20 @@
 "use client";
 
-import React from "react";
+import { useState } from "react";
 import { signIn } from "next-auth/react";
 
 export default function SignInButton() {
-  const submit = () =>
-    signIn("credentials", {
+  const [isLoading, setLoading] = useState(false);
+
+  const submit = async () => {
+    setLoading(true);
+    const result = await signIn("credentials", {
       email: "johndoe@gmail.com",
       password: "123abcABC*",
       redirect: false,
     });
-  return <button onClick={submit}>SignIn</button>;
+    setLoading(false);
+    console.log(result);
+  };
+  return <button onClick={submit}>Sign in {isLoading && "..."}</button>;
 }
