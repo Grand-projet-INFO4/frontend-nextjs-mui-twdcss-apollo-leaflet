@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 import "./globals.css";
 import Providers from "./Providers";
-import Navbar from "./Navbar";
+import AppBar from "./AppBar";
 import InitialAuthStateSetup from "@/features/auth/components/InitialAuthStateSetup";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -12,7 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <InitialAuthStateSetup />
           <div className="main-body">
-            {/* <Navbar /> */}
+            <AppBar />
             {children}
           </div>
         </Providers>
@@ -22,5 +22,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 
 export const metadata: Metadata = {
-  title: "Zaha-Dia | Facilitez les voyages en taxi-brousse",
+  title: "Zaha Dia | Facilitez les voyages en taxi-brousse",
+  icons: "favicon.png",
 };

@@ -21,20 +21,28 @@ export const authModel = createModel<RootModel>()({
     refreshToken: null,
     expiresAt: null,
     csrfToken: null,
-    isAuthenticated: false,
     hasFetched: false,
   } as AuthModelState,
   reducers: {
     // Sets the authentication state
     setAuthenticationState(_, payload: Partial<AuthModelState>) {
       const state: Partial<AuthModelState> = {};
-      payload.isAuthenticated !== undefined && (state.isAuthenticated = payload.isAuthenticated);
       payload.authUser !== undefined && (state.authUser = payload.authUser);
       payload.accessToken !== undefined && (state.accessToken = payload.accessToken);
       payload.refreshToken !== undefined && (state.refreshToken = payload.refreshToken);
       payload.expiresAt !== undefined && (state.expiresAt = payload.expiresAt);
       payload.hasFetched !== undefined && (state.hasFetched = payload.hasFetched);
       return { ..._, ...state };
+    },
+    // Sets the authentication state as signed out
+    signout(state) {
+      return {
+        ...state,
+        authUser: null,
+        accessToken: null,
+        refreshToken: null,
+        expiresAt: null,
+      };
     },
   },
   effects: {

@@ -35,94 +35,90 @@ export interface ServerClientOptions {
 export function getClient(options: ServerClientOptions = {}) {
   const { auth = false, refreshToken } = options;
 
-  const { getClient } = registerApolloClient(() => {
-    const httpLink = new HttpLink({
-      uri: BACKEND_GRAPHQL_URL,
-    });
-
-    let links: ApolloLink[] = [];
-
-    // If the client's requests are to be authenticated, ...
-    if (auth || refreshToken) {
-      // Include the access token inside each request's authorization header
-      const authLink = setContext(async function (_, { headers }) {
-        let token: string;
-
-        if (auth) {
-          const session = await getServerSession();
-
-          // If there's no session (not authenticated), the user must be redirected to the sign in page
-          if (!session) {
-            const toSignin = `${SIGNIN_PAGE_PATH}?${REDIRECTION_REASON_QUERY_PARAM}=${SigninRedirectionReason.Unauthenticated}`;
-            redirect(toSignin);
-            return;
-          }
-
-          token = session.accessToken;
-        } else {
-          token = refreshToken as string;
-        }
-
-        return {
-          headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-          },
-        };
-      });
-
-      links.push(authLink);
-    }
-
-    // Error handler link
-    const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
-      if (graphQLErrors) {
-        for (const error of graphQLErrors) {
-          const { message, locations, path, extensions } = error;
-          console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
-
-          // Whether the user should be redirected to the forbidden page
-          let isForbidden = false;
-
-          switch (extensions.code) {
-            // If the request is unauthorized and the operation is not the sign in operation,
-            // then the user should be redirected to the forbidden page
-            case "FORBIDDEN": {
-              if (operation.operationName !== "SignIn") {
-                isForbidden = true;
-              }
-              break;
-            }
-
-            // In case of a 5XX status request error from the GraphQL server,
-            // or a GraphQL validation error,
-            // we throw those errors in application
-            case "INTERNAL_SERVER_ERROR":
-            case "GRAPHQL_VALIDATION_FAILED":
-              throw error;
-
-            default:
-              break;
-          }
-
-          if (isForbidden) {
-            const toForbidden = `/${FORBIDDEN_PAGE_PATH}?${REDIRECTION_REASON_QUERY_PARAM}=${SigninRedirectionReason.Unauthorized}`;
-            redirect(toForbidden);
-            break;
-          }
-        }
-      }
-      if (networkError) console.log(`[Network error]: ${networkError}`);
-    });
-
-    links.push(errorLink);
-    links.push(httpLink);
-
-    return new ApolloClient({
-      cache: new InMemoryCache(),
-      link: ApolloLink.from(links),
-    });
+  const httpLink = new HttpLink({
+    uri: BACKEND_GRAPHQL_URL,
   });
 
-  return getClient();
+  let links: ApolloLink[] = [];
+
+  // If the client's requests are to be authenticated, ...
+  if (auth || refreshToken) {
+    // Include the access token inside each request's authorization header
+    const authLink = setContext(async function (_, { headers }) {
+      let token: string;
+
+      if (auth) {
+        const session = await getServerSession();
+
+        // If there's no session (not authenticated), the user must be redirected to the sign in page
+        if (!session) {
+          const toSignin = `${SIGNIN_PAGE_PATH}?${REDIRECTION_REASON_QUERY_PARAM}=${SigninRedirectionReason.Unauthenticated}`;
+          redirect(toSignin);
+          return;
+        }
+
+        token = session.accessToken;
+      } else {
+        token = refreshToken as string;
+      }
+
+      return {
+        headers: {
+          ...headers,
+          Authorization: `Bearer ${token}`,
+        },
+      };
+    });
+
+    links.push(authLink);
+  }
+
+  // Error handler link
+  const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
+    if (graphQLErrors) {
+      for (const error of graphQLErrors) {
+        const { message, locations, path, extensions } = error;
+        console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
+
+        // Whether the user should be redirected to the forbidden page
+        let isForbidden = false;
+
+        switch (extensions.code) {
+          // If the request is unauthorized and the operation is not the sign in operation,
+          // then the user should be redirected to the forbidden page
+          case "FORBIDDEN": {
+            if (operation.operationName !== "SignIn") {
+              isForbidden = true;
+            }
+            break;
+          }
+
+          // In case of a 5XX status request error from the GraphQL server,
+          // or a GraphQL validation error,
+          // we throw those errors in application
+          case "INTERNAL_SERVER_ERROR":
+          case "GRAPHQL_VALIDATION_FAILED":
+            throw error;
+
+          default:
+            break;
+        }
+
+        if (isForbidden) {
+          const toForbidden = `/${FORBIDDEN_PAGE_PATH}?${REDIRECTION_REASON_QUERY_PARAM}=${SigninRedirectionReason.Unauthorized}`;
+          redirect(toForbidden);
+          break;
+        }
+      }
+    }
+    if (networkError) console.log(`[Network error]: ${networkError}`);
+  });
+
+  links.push(errorLink);
+  links.push(httpLink);
+
+  return new ApolloClient({
+    cache: new InMemoryCache(),
+    link: ApolloLink.from(links),
+  });
 }

@@ -7,6 +7,7 @@ export default function SignInButton() {
   const [isLoading, setLoading] = useState(false);
 
   const submit = async () => {
+    console.log("Hello!");
     setLoading(true);
     const result = await signIn("credentials", {
       email: "johndoe@gmail.com",
