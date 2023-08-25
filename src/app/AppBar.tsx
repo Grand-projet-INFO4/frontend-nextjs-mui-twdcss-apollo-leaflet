@@ -55,7 +55,7 @@ export default function AppBar() {
             fontSize: 26,
           }}
         >
-          <img src="logo.svg" alt="Zaha Dia logo" className="block" style={{ height: "42px" }} />
+          <img src="/logo.svg" alt="Zaha Dia logo" className="block" style={{ height: "42px" }} />
           <span className="flex items-center ml-4">Zaha Dia</span>
         </MuiLink>
         {/* Secondary navigation */}

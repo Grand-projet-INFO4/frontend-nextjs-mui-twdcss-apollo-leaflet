@@ -23,7 +23,7 @@ import UserRoleBadge from "@/features/user/components/UserRoleBadge";
 import { UserRole, adminRolesSet, cooperativeRolesSet } from "@/features/user/user.constants";
 
 export default function AppBarAuthUserMenu() {
-  const { authUser } = useAuthModel();
+  /* const { authUser } = useAuthModel();
 
   // Showing a skeleton loader if the authenticated user is not available yet
   if (!authUser) {
@@ -123,7 +123,7 @@ export default function AppBarAuthUserMenu() {
                   <UserRoleBadge component="strong" role={UserRole.Driver} /> chez XXXX
                 </section>
               </>
-            )} */}
+            )} 
             <Divider />
             <section aria-label="Déconnexion" className="py-2">
               <div className="px-2">
@@ -142,5 +142,6 @@ export default function AppBarAuthUserMenu() {
         </ClickAwayListener>
       </Popper>
     </>
-  );
+  ); */
+  return <div>Hello</div>;
 }

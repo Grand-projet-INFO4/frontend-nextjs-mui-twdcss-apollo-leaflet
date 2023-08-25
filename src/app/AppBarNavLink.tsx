@@ -5,22 +5,27 @@ import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 
 import useIsActiveHref from "@/hooks/useIsActiveHref";
+import { useColorModeContext } from "@/contexts/color-mode";
 
 export type AppBarNavLinkProps = PropsWithChildren<{
   href: Url;
 }>;
 
 export default function AppBarNavLink({ href, children }: AppBarNavLinkProps) {
+  const { mode } = useColorModeContext();
+
   const isActive = useIsActiveHref({
     href,
   });
+
+  let contentActiveColor = mode === "dark" ? "primary.light" : "primary.main";
 
   return (
     <Link href={href} className="h-full flex items-center relative no-underline">
       <MenuItem
         component="span"
         sx={{
-          color: isActive ? "text.primary" : "text.secondary",
+          color: isActive ? contentActiveColor : "text.secondary",
           fontWeight: 500,
           fontSize: "0.9375rem", // 15px
           height: "100%",
@@ -33,7 +38,7 @@ export default function AppBarNavLink({ href, children }: AppBarNavLinkProps) {
         className="absolute bottom-0 left-0 w-full duration-300"
         sx={{
           height: 4,
-          backgroundColor: "text.primary",
+          backgroundColor: contentActiveColor,
           opacity: isActive ? "1" : "0",
         }}
       />

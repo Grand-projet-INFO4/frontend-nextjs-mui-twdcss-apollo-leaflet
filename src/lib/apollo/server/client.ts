@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
-import { registerApolloClient } from "@apollo/experimental-nextjs-app-support/rsc";
 
 import { BACKEND_GRAPHQL_URL } from "@/config/urls.config";
 import {
@@ -11,15 +10,16 @@ import {
   SigninRedirectionReason,
 } from "@/features/auth/auth.constants";
 import { REDIRECTION_REASON_QUERY_PARAM } from "@/constants/redirection.constants";
-import { getServerSession } from "../../next-auth";
+import { getServerSession, getToken } from "../../next-auth";
+import { NextRequest } from "next/server";
 
 // Options passed to the apollo client instance getter
 export interface ServerClientOptions {
   // Whether the client instance's operations should be authenticated with the access token or not
   auth?: boolean;
 
-  // Refresh token as the authentication token on refresh token operations
-  refreshToken?: string;
+  // A request object if the request was wade within a route handler or api handler
+  req?: NextRequest;
 }
 
 /**
@@ -33,7 +33,7 @@ export interface ServerClientOptions {
  * @returns An apollo client instance
  */
 export function getClient(options: ServerClientOptions = {}) {
-  const { auth = false, refreshToken } = options;
+  const { auth = false, req } = options;
 
   const httpLink = new HttpLink({
     uri: BACKEND_GRAPHQL_URL,
@@ -42,25 +42,25 @@ export function getClient(options: ServerClientOptions = {}) {
   let links: ApolloLink[] = [];
 
   // If the client's requests are to be authenticated, ...
-  if (auth || refreshToken) {
+  if (auth) {
     // Include the access token inside each request's authorization header
     const authLink = setContext(async function (_, { headers }) {
       let token: string;
 
-      if (auth) {
-        const session = await getServerSession();
+      const session = await (req ? getToken({ req }) : getServerSession());
 
-        // If there's no session (not authenticated), the user must be redirected to the sign in page
-        if (!session) {
-          const toSignin = `${SIGNIN_PAGE_PATH}?${REDIRECTION_REASON_QUERY_PARAM}=${SigninRedirectionReason.Unauthenticated}`;
-          redirect(toSignin);
-          return;
-        }
-
-        token = session.accessToken;
-      } else {
-        token = refreshToken as string;
+      /* We will be commenting this code until the next.js's `redirect` helper will be stable */
+      // // If there's no session (not authenticated), the user must be redirected to the sign in page
+      // if (!session) {
+      //   const toSignin = `${SIGNIN_PAGE_PATH}?${REDIRECTION_REASON_QUERY_PARAM}=${SigninRedirectionReason.Unauthenticated}`;
+      //   redirect(toSignin);
+      //   return;
+      // }
+      if (!session) {
+        throw new Error("The access token is missing");
       }
+
+      token = session.access_token as string;
 
       return {
         headers: {
@@ -80,17 +80,15 @@ export function getClient(options: ServerClientOptions = {}) {
         const { message, locations, path, extensions } = error;
         console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
 
-        // Whether the user should be redirected to the forbidden page
-        let isForbidden = false;
-
         switch (extensions.code) {
           // If the request is unauthorized and the operation is not the sign in operation,
           // then the user should be redirected to the forbidden page
           case "FORBIDDEN": {
-            if (operation.operationName !== "SignIn") {
-              isForbidden = true;
-            }
-            break;
+            /* We are commenting this code for now until the Next.js's `redirect` helper will be stable */
+            // const toForbidden = `/${FORBIDDEN_PAGE_PATH}?${REDIRECTION_REASON_QUERY_PARAM}=${SigninRedirectionReason.Unauthorized}`;
+            // redirect(toForbidden);
+            // break;
+            throw error;
           }
 
           // In case of a 5XX status request error from the GraphQL server,
@@ -102,12 +100,6 @@ export function getClient(options: ServerClientOptions = {}) {
 
           default:
             break;
-        }
-
-        if (isForbidden) {
-          const toForbidden = `/${FORBIDDEN_PAGE_PATH}?${REDIRECTION_REASON_QUERY_PARAM}=${SigninRedirectionReason.Unauthorized}`;
-          redirect(toForbidden);
-          break;
         }
       }
     }

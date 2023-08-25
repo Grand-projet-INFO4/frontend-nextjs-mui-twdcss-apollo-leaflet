@@ -3,52 +3,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import { substractDate } from "@/utils/date-time.utils";
 import { ACCESS_TOKEN_EXPIRATION_OFFSET, SIGNIN_PAGE_PATH } from "@/features/auth/auth.constants";
-import { getClient } from "@/lib/apollo/server";
-import {
-  REFRESH_TOKEN_MUTATION,
-  RefreshTokenMutation,
-} from "@/features/auth/operations/refresh-token.mutation";
-import {
-  SIGN_IN_MUTATION,
-  SignInMutation,
-  SignInMutationVariables,
-} from "@/features/auth/operations/sign-in.mutation";
-
-/**
- * Signs in a user to the GraphQL API using the email/password credentials
- *
- * @returns The authentication result
- */
-async function signIn(email: string, password: string) {
-  const { data, errors } = await getClient().mutate<SignInMutation, SignInMutationVariables>({
-    mutation: SIGN_IN_MUTATION,
-    variables: {
-      email,
-      password,
-    },
-  });
-  if (errors) {
-    for (const error of errors) {
-      if (error.extensions.code === "FORBIDDEN") return null;
-    }
-  }
-  return (data as SignInMutation).signin;
-}
-
-/**
- * Refresh an access token with a refresh token
- *
- * @param token The refresh token
- * @returns The refresh access token data
- */
-async function refreshToken(token: string) {
-  const { data } = await getClient({
-    refreshToken: token,
-  }).mutate<RefreshTokenMutation>({
-    mutation: REFRESH_TOKEN_MUTATION,
-  });
-  return (data as RefreshTokenMutation).refreshToken;
-}
+import AuthService from "@/features/auth/auth.service";
+import type { RestApiError } from "@/types/api";
 
 // Next Auth's authentication options
 export const authOptions: AuthOptions = {
@@ -57,21 +13,27 @@ export const authOptions: AuthOptions = {
     CredentialsProvider({
       name: "Crendentials",
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "E-mail address" },
+        identifier: {
+          label: "Email or Phone number",
+          type: "string",
+          placeholder: "E-mail address",
+        },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials) return null;
-        console.log({ Environment: typeof window === undefined ? "Server" : "Browser" });
-        const authResult = await signIn(credentials.email, credentials.password);
+        const authResult = await AuthService.signin({
+          identifier: credentials.identifier,
+          password: credentials.password,
+        });
         if (!authResult) return null;
-        // The user id, access token and refresh token from authentication
+        // The access token and its expiry date-time and the refresh token from authentication
         // are to ben passed next to the session as the authentication payload
         return {
-          id: authResult.user.id,
-          accessToken: authResult.accessToken,
-          expiresAt: authResult.expiresAt,
-          refreshToken: authResult.refreshToken,
+          id: "", // Fix
+          access_token: authResult.access_token,
+          expires_at: authResult.expires_at,
+          refresh_token: authResult.refresh_token,
         };
       },
     }),
@@ -85,37 +47,51 @@ export const authOptions: AuthOptions = {
     // Defines the authentication payload to store as JWT
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
-        token.accessToken = user.accessToken;
-        token.expiresAt = user.expiresAt;
-        token.refreshToken = user.refreshToken;
-      } else if (token) {
-        const now = new Date();
-        if (now > substractDate(token.expiresAt as string, ACCESS_TOKEN_EXPIRATION_OFFSET)) {
-          // Refreshing the token and updating the JWT payload
-          const { accessToken, expiresAt } = await refreshToken(token.refreshToken as string);
-          return {
-            ...token,
-            accessToken,
-            expiresAt,
-          };
-        } else {
-          return token;
-        }
+        // Right after sign in
+        token.access_token = user.access_token;
+        token.expires_at = user.expires_at;
+        token.refresh_token = user.refresh_token;
+      }
+      const now = new Date();
+      // If the request's time is within the access token expiration offset delay before the access token's expiry date-time
+      // or past the access token's expiry date-time
+      if (now > substractDate(token.expires_at as string, ACCESS_TOKEN_EXPIRATION_OFFSET)) {
+        // Refreshing the token and updating the JWT payload
+        const { access_token, expires_at } = await AuthService.refreshToken(
+          token.refresh_token as string,
+        );
+        return {
+          ...token,
+          access_token,
+          expires_at,
+        };
       }
       return token;
     },
     // Defines what data are exposed from the session after the JWT had been decrypted
     async session({ session, token }) {
       // @ts-ignore
-      session.id = token.id;
+      session.access_token = token.access_token;
       // @ts-ignore
-      session.accessToken = token.accessToken;
+      session.expires_at = token.expires_at;
       // @ts-ignore
-      session.expiresAt = token.expiresAt;
-      // @ts-ignore
-      session.refreshToken = token.refreshToken;
+      session.refresh_token = token.refresh_token;
       return session;
+    },
+  },
+  events: {
+    async signOut({ token, session }) {
+      console.log({ token, session });
+      try {
+        await AuthService.signout(token.refresh_token as string);
+      } catch (err) {
+        const error = err as RestApiError;
+        // If the error is not a forbidden error, throw the error,
+        // Forbidden errors are allowed to occur on sign out
+        if (!error.statusCode || error.statusCode !== 403) {
+          throw error;
+        }
+      }
     },
   },
   pages: {

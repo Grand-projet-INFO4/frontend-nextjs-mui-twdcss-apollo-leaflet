@@ -10,6 +10,10 @@ export function createTheme(mode: PaletteMode) {
       secondary: {
         main: "#D12EAE",
       },
+      tonalOffset: {
+        light: mode === "dark" ? 0.3 : 0.2,
+        dark: 0.2,
+      },
     },
   });
 }

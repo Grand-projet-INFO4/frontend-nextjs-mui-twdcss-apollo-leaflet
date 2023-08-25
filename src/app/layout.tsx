@@ -23,5 +23,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 export const metadata: Metadata = {
   title: "Zaha Dia | Facilitez les voyages en taxi-brousse",
-  icons: "favicon.png",
+  icons: "/favicon.png",
 };

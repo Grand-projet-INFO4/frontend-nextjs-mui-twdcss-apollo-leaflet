@@ -2,10 +2,9 @@ import NextAuth, { DefaultSession, JWT as NextAuthJWT } from "next-auth";
 
 declare module "next-auth" {
   interface User {
-    id: string;
-    accessToken: string;
-    expiresAt: string; // Access Token expiration date
-    refreshToken: string;
+    access_token: string;
+    expires_at: string; // Access Token expiration date
+    refresh_token: string;
   }
 
   type Session = DefaultSession["user"] & User;

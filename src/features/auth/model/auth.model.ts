@@ -1,10 +1,10 @@
 import { createModel } from "@rematch/core";
 
-import { User } from "@/features/user/user";
 import { RootModel } from "@/lib/rematch";
+import { AuthUser } from "../auth";
 
 export interface AuthModelState {
-  authUser: User | null;
+  authUser: AuthUser | null;
   accessToken: string | null;
   refreshToken: string | null;
   expiresAt: string | null;
