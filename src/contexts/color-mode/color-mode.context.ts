@@ -1,10 +1,9 @@
 "use client";
 
-import { PaletteMode } from "@mui/material";
 import { createContext } from "react";
 
 export type ColorModeContextValue = {
-  mode: PaletteMode;
+  mode: "light" | "dark";
 
   // Toggles the between the color modes
   toggleMode(): void;

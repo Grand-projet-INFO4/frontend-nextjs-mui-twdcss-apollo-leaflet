@@ -1,14 +1,13 @@
 "use client";
 
 import { PropsWithChildren, useEffect, useMemo, useState } from "react";
-import { PaletteMode } from "@mui/material";
 
 import colorModeContext, { ColorModeContextValue } from "./color-mode.context";
 
 export type ColorModeProviderProps = PropsWithChildren;
 
 export default function ColorModeProvider({ children }: ColorModeProviderProps) {
-  const [mode, setMode] = useState<PaletteMode>("light");
+  const [mode, setMode] = useState<"light" | "dark">("light");
 
   const value = useMemo<ColorModeContextValue>(
     () => ({
