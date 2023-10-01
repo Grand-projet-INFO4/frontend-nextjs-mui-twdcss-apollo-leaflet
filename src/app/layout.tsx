@@ -2,17 +2,17 @@ import { Metadata } from "next";
 
 import "./globals.css";
 import Providers from "./Providers";
-import AppBar from "./AppBar";
 import InitialAuthStateSetup from "@/features/auth/components/InitialAuthStateSetup";
+import AppTopBar from "@/layouts/AppTopBar";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body suppressHydrationWarning={true}>
+    <html lang="en" suppressHydrationWarning={true}>
+      <body>
         <Providers>
           <InitialAuthStateSetup />
           <div className="main-body">
-            <AppBar />
+            <AppTopBar />
             {children}
           </div>
         </Providers>
