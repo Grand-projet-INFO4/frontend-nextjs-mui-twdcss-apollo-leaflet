@@ -25,4 +25,7 @@ userRoleTranslationMap.set(UserRole.Driver, "Chauffeur");
 userRoleTranslationMap.set(UserRole.Admin, "Administrateur");
 userRoleTranslationMap.set(UserRole.SuperAdmin, "Super Administrateur");
 
+// The pathname for the authenticated user's panel
+export const AUTH_USER_PANEL_PATH = "/user-panel"
+
 export { userRoleTranslationMap };

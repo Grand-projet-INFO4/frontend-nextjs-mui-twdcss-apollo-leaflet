@@ -4,12 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faUserCircle, IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { usePathname } from "next/navigation";
 
 import AppTopBarNavLinks from "./AppTopBarNavLinks";
 import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
+  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
@@ -19,6 +21,9 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import "./AppTopBar.css";
 import AppTopBarSideNavToggle from "./AppTopBarSideNavToggle";
+import { cn } from "@/lib/utils";
+import { COOPERATIVE_PANEL_PATH } from "@/features/cooperative/cooperative.constants";
+import { AUTH_USER_PANEL_PATH } from "@/features/user/user.constants";
 
 // Authentication links: Sign in + Sign up
 const authLinks: { href: string; label: string; icon: IconDefinition }[] = [
@@ -27,9 +32,17 @@ const authLinks: { href: string; label: string; icon: IconDefinition }[] = [
 ];
 
 export default function AppTopBar() {
+  const pathname = usePathname();
+
   return (
     <header className="border-b bg-background">
-      <div className="px-3 h-[60px] flex items-center justify-between">
+      <div
+        className={cn("px-3 h-[60px] flex items-center justify-between", {
+          container:
+            !pathname.startsWith(AUTH_USER_PANEL_PATH) &&
+            !pathname.startsWith(COOPERATIVE_PANEL_PATH),
+        })}
+      >
         <div className="flex items-center">
           {/* Navigation sidebar toggle */}
           <AppTopBarSideNavToggle />
@@ -71,12 +84,11 @@ export default function AppTopBar() {
                   <ul className="list-none flex flex-col w-[178px] py-2 px-1 bg-background">
                     {authLinks.map((link) => (
                       <li key={link.href}>
-                        <Link
-                          href={link.href}
-                          className="flex items-center rounded-sm text-sm font-medium text-foreground/60 hover:text-foreground/80 p-3 hover:bg-accent"
-                        >
-                          <FontAwesomeIcon icon={link.icon} className="mr-3 text-lg" />
-                          {link.label}
+                        <Link href={link.href} passHref legacyBehavior>
+                          <NavigationMenuLink className="flex items-center rounded-sm text-sm font-medium text-foreground/60 hover:text-foreground/80 p-3 hover:bg-accent focus:text-foreground/80 focus:bg-accent duration-300">
+                            <FontAwesomeIcon icon={link.icon} className="mr-3 text-lg" />
+                            {link.label}
+                          </NavigationMenuLink>
                         </Link>
                       </li>
                     ))}

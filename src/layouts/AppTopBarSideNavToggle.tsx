@@ -2,17 +2,23 @@ import React from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 import "./AppTopBarSideNavToggle.css";
+import { useSideNavContext } from "@/contexts/sidenav";
+import {Button} from "@/components/ui/button"
 
 export default function AppTopBarSideNavToggle() {
+  const { toggle } = useSideNavContext();
+
   const label = "Ouvrir le menu de navigation";
 
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <button
+        <Button
           id="top-bar-sidenav-toggle"
           arial-label={label}
           className="top-bar-hide-lg p-2 mr-3"
+          size="icon"
+          onClick={() => toggle()}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -38,7 +44,7 @@ export default function AppTopBarSideNavToggle() {
               </g>
             </g>
           </svg>
-        </button>
+        </Button>
       </TooltipTrigger>
       <TooltipContent className="border-none shadow-none p-0 pl-2">
         <div className="bg-tooltip text-tooltip-foreground px-2 py-1 rounded-sm mt-1">
