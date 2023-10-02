@@ -49,10 +49,10 @@ export default function AppTopBar() {
         </div>
         <div className="flex items-center">
           {/* Link for booking a trip */}
-          <Button asChild className="top-bar-show-md">
+          <Button asChild className="top-bar-show-sm">
             <Link href="/book-trip">Réserver un voyage</Link>
           </Button>
-          <Separator orientation="vertical" className="top-bar-show-md h-[25px] mx-3" />
+          <Separator orientation="vertical" className="top-bar-show-sm h-[25px] mx-3" />
           {/* Color theme toggle */}
           <AppTopBarThemeSwitch />
           <Separator orientation="vertical" className="top-bar-show-md h-[25px] ml-3 mr-1" />

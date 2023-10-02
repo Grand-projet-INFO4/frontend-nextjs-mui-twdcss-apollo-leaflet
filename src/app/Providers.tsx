@@ -4,6 +4,7 @@ import { StoreProvider } from "@/lib/rematch";
 import ApolloWrapper from "@/lib/apollo/client/ApolloWrapper";
 import NextAuthProvider from "@/lib/next-auth/NextAuthProvider";
 import { ThemeProvider } from "@/lib/next-themes";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export default async function Providers({ children }: PropsWithChildren) {
   return (
@@ -11,7 +12,7 @@ export default async function Providers({ children }: PropsWithChildren) {
       <StoreProvider>
         <NextAuthProvider>
           <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
-            {children}
+            <TooltipProvider>{children}</TooltipProvider>
           </ThemeProvider>
         </NextAuthProvider>
       </StoreProvider>

@@ -27,25 +27,23 @@ export default function AppTopBarThemeSwitch() {
   }
 
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="outline"
-            size="icon"
-            className="text-foreground/80"
-            aria-label={label}
-            onClick={handleThemeToggle}
-          >
-            <FontAwesomeIcon icon={faIcon} />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          <div className="bg-tooltip text-tooltip-foreground px-2 py-1 rounded-sm mt-1">
-            <p className="text-xs">{title}</p>
-          </div>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant="outline"
+          size="icon"
+          className="text-foreground/80"
+          aria-label={label}
+          onClick={handleThemeToggle}
+        >
+          <FontAwesomeIcon icon={faIcon} />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>
+        <div className="bg-tooltip text-tooltip-foreground px-2 py-1 rounded-sm mt-1">
+          <p className="text-xs">{title}</p>
+        </div>
+      </TooltipContent>
+    </Tooltip>
   );
 }
