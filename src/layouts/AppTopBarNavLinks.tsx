@@ -6,8 +6,10 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { useTheme } from "next-themes";
 
 import AppTopBarNavLink from "./AppTopBarNavLink";
+import { cn } from "@/lib/utils";
 
 const links: Record<"href" | "label", string>[] = [
   { href: "/", label: "Accueil" },
@@ -23,6 +25,8 @@ const miscLinks: Record<"href" | "label", string>[] = [
 ];
 
 export default function AppTopBarNavLinks() {
+  const { resolvedTheme } = useTheme();
+
   return (
     <NavigationMenu
       aria-label="Navigation secondaire"
@@ -36,7 +40,12 @@ export default function AppTopBarNavLinks() {
           </NavigationMenuItem>
         ))}
         <NavigationMenuItem>
-          <NavigationMenuTrigger className="text-foreground/60 hover:text-foreground/80 px-2 py-1">
+          <NavigationMenuTrigger
+            className={cn("text-foreground/60 hover:text-foreground/80 px-2 py-1", {
+              "data-[state=open]:bg-accent": resolvedTheme === "light",
+              "data-[state=open]:bg-accent/30": resolvedTheme === "dark",
+            })}
+          >
             Divers
           </NavigationMenuTrigger>
           <NavigationMenuContent>

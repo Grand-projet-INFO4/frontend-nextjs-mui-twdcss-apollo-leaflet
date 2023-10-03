@@ -35,7 +35,7 @@ export default function AppTopBar() {
   const pathname = usePathname();
 
   return (
-    <header className="border-b bg-background">
+    <header className="border-b border-b-border bg-background">
       <div
         className={cn("px-3 h-[60px] flex items-center justify-between", {
           container:
