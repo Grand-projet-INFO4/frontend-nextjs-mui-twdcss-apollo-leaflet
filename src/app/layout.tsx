@@ -13,7 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <InitialAuthStateSetup />
           <div className="main-body flex">
-            <div className="sticky top-0">
+            <div className="h-screen max-h-screen self-start">
               <SideNavLayout />
             </div>
             <div className="main-body-content grow shrink auto">

@@ -1,14 +1,14 @@
 import React from "react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 import "./AppTopBarSideNavToggle.css";
 import { useSideNavContext } from "@/contexts/sidenav";
-import {Button} from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
 export default function AppTopBarSideNavToggle() {
-  const { toggle } = useSideNavContext();
+  const { show, toggle } = useSideNavContext();
 
-  const label = "Ouvrir le menu de navigation";
+  const label = (show ? "Fermer" : "Ouvrir") + " le menu de navigation";
 
   return (
     <Tooltip>
@@ -16,17 +16,14 @@ export default function AppTopBarSideNavToggle() {
         <Button
           id="top-bar-sidenav-toggle"
           arial-label={label}
+          aria-haspopup="menu"
+          aria-controls="app-sidenav-layout"
           className="top-bar-hide-lg p-2 mr-3"
           size="icon"
+          variant="outline"
           onClick={() => toggle()}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="25"
-            height="21"
-            viewBox="0 0 310 259.344"
-            version="1.1"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 310 259.344" version="1.1">
             <g transform="translate(10.016 -803.031)">
               <g
                 id="top-bar-sidenav-toggle-paths"
