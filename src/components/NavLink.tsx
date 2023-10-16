@@ -3,6 +3,7 @@
 import Link, { type LinkProps } from "next/link";
 
 import useIsActiveHref from "@/hooks/useIsActiveHref";
+import { cn } from "@/lib/utils";
 
 export type NavLinkProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps> &
   LinkProps & {
@@ -25,14 +26,14 @@ export default function NavLink({
     strict,
   });
 
-  const _className = isActive
-    ? className
-      ? `${className} ${activeClassName}`
-      : activeClassName
-    : className;
-
   return (
-    <Link href={href} className={_className} {...props}>
+    <Link
+      href={href}
+      className={cn(className, {
+        [activeClassName]: isActive,
+      })}
+      {...props}
+    >
       {children}
     </Link>
   );
