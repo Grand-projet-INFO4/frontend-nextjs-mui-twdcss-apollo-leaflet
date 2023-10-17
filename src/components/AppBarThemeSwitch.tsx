@@ -6,7 +6,7 @@ import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
 import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
-import { TooltipProvider, Tooltip, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip";
 import { TooltipContent } from "@radix-ui/react-tooltip";
 
 export default function AppTopBarThemeSwitch() {
