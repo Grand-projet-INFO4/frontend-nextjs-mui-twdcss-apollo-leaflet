@@ -1,17 +1,15 @@
-"use client";
-
 import React, { PropsWithChildren } from "react";
-import { usePathname } from "next/navigation";
+import { headers } from "next/headers";
 
 import "./AuthPageLayout.scss";
 import { SIGNIN_PAGE_PATH, SIGNUP_PAGE_PATH } from "@/features/auth/auth.constants";
-import ProtectedGuard from "@/features/auth/components/ProtectedGuard";
 import AuthPageIllustration from "@/app/auth/AuthPageIllustration";
 import AppBarLogo from "@/components/AppBarLogo";
 import AppTopBarThemeSwitch from "@/components/AppBarThemeSwitch";
+import AuthenticatedPageGuard from "@/features/auth/components/AuthenticatedPageGuard";
 
 export default function AuthPageLayout({ children }: PropsWithChildren) {
-  const pathname = usePathname();
+  const pathname = headers().get("x-pathname") as string;
 
   // Authentication page: Whether the current page is Sign in or the Sign up page
   const isAuthPage = pathname.startsWith(SIGNIN_PAGE_PATH) || pathname.startsWith(SIGNUP_PAGE_PATH);
@@ -20,7 +18,7 @@ export default function AuthPageLayout({ children }: PropsWithChildren) {
   if (!isAuthPage) return children;
 
   return (
-    <ProtectedGuard grants={{ authState: "unauthenticated" }}>
+    <AuthenticatedPageGuard authenticated={false}>
       <div className="auth-page-layout flex">
         <div className="auth-page-layout__illustration w-1/2 max-w-xl sticky top-0">
           <AuthPageIllustration />
@@ -33,6 +31,6 @@ export default function AuthPageLayout({ children }: PropsWithChildren) {
           {children}
         </div>
       </div>
-    </ProtectedGuard>
+    </AuthenticatedPageGuard>
   );
 }
