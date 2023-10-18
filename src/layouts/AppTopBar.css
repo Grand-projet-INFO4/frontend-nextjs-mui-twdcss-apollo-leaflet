@@ -1,3 +1,7 @@
+:root {
+  --topbar-height: calc(3.75rem); /* 60px */
+}
+
 .top-bar-show-lg,
 .top-bar-show-flex-lg,
 .top-bar-show-md,

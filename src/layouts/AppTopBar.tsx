@@ -16,7 +16,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { SIGNIN_PAGE_PATH, SIGNUP_PAGE_PATH } from "@/features/auth/auth.constants";
-import AppTopBarThemeSwitch from "./AppTopBarThemeSwitch";
+import AppTopBarThemeSwitch from "../components/AppBarThemeSwitch";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import "./AppTopBar.css";
@@ -24,6 +24,7 @@ import AppTopBarSideNavToggle from "./AppTopBarSideNavToggle";
 import { cn } from "@/lib/utils";
 import { COOPERATIVE_PANEL_PATH } from "@/features/cooperative/cooperative.constants";
 import { AUTH_USER_PANEL_PATH } from "@/features/user/user.constants";
+import AppBarLogo from "@/components/AppBarLogo";
 
 // Authentication links: Sign in + Sign up
 const authLinks: { href: string; label: string; icon: IconDefinition }[] = [
@@ -34,28 +35,23 @@ const authLinks: { href: string; label: string; icon: IconDefinition }[] = [
 export default function AppTopBar() {
   const pathname = usePathname();
 
+  if (pathname.startsWith(SIGNIN_PAGE_PATH) || pathname.startsWith(SIGNUP_PAGE_PATH)) return null;
+
   return (
     <header className="border-b border-b-border bg-background sticky top-0">
       <div
-        className={cn("px-3 h-[60px] flex items-center justify-between", {
+        className={cn("px-3 flex items-center justify-between", {
           container:
             !pathname.startsWith(AUTH_USER_PANEL_PATH) &&
             !pathname.startsWith(COOPERATIVE_PANEL_PATH),
         })}
+        style={{ height: "var(--topbar-height)" }}
       >
         <div className="flex items-center">
           {/* Navigation sidebar toggle */}
           <AppTopBarSideNavToggle />
           {/* Logo */}
-          <Link
-            href="/"
-            id="app-bar-logo"
-            className="flex items-center"
-            aria-label="Back to landing page"
-          >
-            <Image src="/logo.svg" alt="Zaha Dia logo" width={42} height={42} />
-            <span className="font-bold text-2xl ml-2">Zaha Dia</span>
-          </Link>
+          <AppBarLogo />
           <Separator orientation="vertical" className="top-bar-show-lg h-[25px] ml-5 mr-6" />
           {/* Secondary navigation links */}
           <AppTopBarNavLinks />
