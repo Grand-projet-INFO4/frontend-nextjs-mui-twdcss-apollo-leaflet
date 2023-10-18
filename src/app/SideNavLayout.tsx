@@ -12,6 +12,7 @@ import AppMainNavbar from "@/layouts/AppMainNavbar";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useSideNavContext } from "@/contexts/sidenav";
+import CooperativePanelSideNav from "@/features/cooperative/components/CooperativePanelSideNav";
 
 // Class names for the animations
 const fadeInClassName = "fade-in";
@@ -78,7 +79,7 @@ export default function SideNavLayout() {
       id="app-sidenav-layout"
       aria-labelledby="app-sidenav-title"
       aria-hidden={ariaHidden}
-      className={cn("fixed top-0 left-0 z-40 h-full", {
+      className={cn("fixed top-0 left-0 z-30 h-full", {
         open: show,
         "fixed-desktop": isPanelRoute,
       })}
@@ -120,7 +121,7 @@ export default function SideNavLayout() {
         </div>
         {/* Content */}
         <div id="app-sidenav-content" className="px-3">
-          {!isPanelRoute && <AppMainNavbar />}
+          {!isPanelRoute ? <AppMainNavbar /> : <CooperativePanelSideNav />}
         </div>
       </div>
     </div>

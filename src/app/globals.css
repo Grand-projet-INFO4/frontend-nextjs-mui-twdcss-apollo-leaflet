@@ -5,6 +5,7 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
+    --background-dark: 0 0% 95%;
     --foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
@@ -38,6 +39,7 @@
 
   html[data-theme="dark"] {
     --background: 225 6% 13%;
+    --background-dark: 0 0% 5%;
     --foreground: 0 0% 100%;
 
     --muted: 210 40% 96.1%;

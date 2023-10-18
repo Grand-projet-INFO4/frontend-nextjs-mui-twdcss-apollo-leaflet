@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faUserCircle, IconDefinition } from "@fortawesome/free-solid-svg-icons";
@@ -35,15 +34,17 @@ const authLinks: { href: string; label: string; icon: IconDefinition }[] = [
 export default function AppTopBar() {
   const pathname = usePathname();
 
-  if (pathname.startsWith(SIGNIN_PAGE_PATH) || pathname.startsWith(SIGNUP_PAGE_PATH)) return null;
+  const isAuthPage = pathname.startsWith(SIGNIN_PAGE_PATH) || pathname.startsWith(SIGNUP_PAGE_PATH);
+  if (isAuthPage) return null;
+
+  const isPanelPage =
+    pathname.startsWith(AUTH_USER_PANEL_PATH) || pathname.startsWith(COOPERATIVE_PANEL_PATH);
 
   return (
-    <header className="border-b border-b-border bg-background sticky top-0">
+    <header className="border-b border-b-border bg-background sticky top-0 z-20">
       <div
         className={cn("px-3 flex items-center justify-between", {
-          container:
-            !pathname.startsWith(AUTH_USER_PANEL_PATH) &&
-            !pathname.startsWith(COOPERATIVE_PANEL_PATH),
+          container: !isPanelPage,
         })}
         style={{ height: "var(--topbar-height)" }}
       >
@@ -52,16 +53,24 @@ export default function AppTopBar() {
           <AppTopBarSideNavToggle />
           {/* Logo */}
           <AppBarLogo />
-          <Separator orientation="vertical" className="top-bar-show-lg h-[25px] ml-5 mr-6" />
-          {/* Secondary navigation links */}
-          <AppTopBarNavLinks />
+          {!isPanelPage && (
+            <>
+              <Separator orientation="vertical" className="top-bar-show-lg h-[25px] ml-5 mr-6" />
+              {/* Secondary navigation links */}
+              <AppTopBarNavLinks />
+            </>
+          )}
         </div>
         <div className="flex items-center">
-          {/* Link for booking a trip */}
-          <Button asChild className="top-bar-show-sm">
-            <Link href="/book-trip">Réserver un voyage</Link>
-          </Button>
-          <Separator orientation="vertical" className="top-bar-show-sm h-[25px] mx-3" />
+          {!isPanelPage && (
+            <>
+              {/* Link for booking a trip */}
+              <Button asChild className="top-bar-show-sm">
+                <Link href="/book-trip">Réserver un voyage</Link>
+              </Button>
+              <Separator orientation="vertical" className="top-bar-show-sm h-[25px] mx-3" />
+            </>
+          )}
           {/* Color theme toggle */}
           <AppTopBarThemeSwitch />
           <Separator orientation="vertical" className="top-bar-show-md h-[25px] ml-3 mr-1" />
