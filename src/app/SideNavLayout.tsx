@@ -120,8 +120,8 @@ export default function SideNavLayout() {
           </Tooltip>
         </div>
         {/* Content */}
-        <div id="app-sidenav-content" className="px-3">
-          {!isPanelRoute ? <AppMainNavbar /> : <CooperativePanelSideNav />}
+        <div id="app-sidenav-content" className="pb-7">
+          {pathname && !isPanelRoute ? <AppMainNavbar /> : <CooperativePanelSideNav />}
         </div>
       </div>
     </div>

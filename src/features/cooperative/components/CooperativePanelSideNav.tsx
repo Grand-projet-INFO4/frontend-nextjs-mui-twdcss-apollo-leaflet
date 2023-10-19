@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React from "react";
@@ -13,12 +14,12 @@ import {
   BusFront,
 } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRoute, faTruckMoving, faMapMarkedAlt } from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
+import { faRoute, faIdBadge, faMapMarkedAlt } from "@fortawesome/free-solid-svg-icons";
 import { COOPERATIVE_PANEL_PATH } from "../cooperative.constants";
-import { cn } from "@/lib/utils";
 import NavLink from "@/components/NavLink";
-import { Separator } from "@radix-ui/react-separator";
+import { Separator } from "@/components/ui/separator";
+import { useAuthModel } from "@/features/auth/model";
+import { Cooperative } from "@/graphql/graphql";
 
 type LinkWithIcon = {
   pathname: string;
@@ -45,6 +46,11 @@ const links: LinkWithIcon[] = [
     pathname: "/vehicles",
     label: "Véhicules",
     icon: <BusFront />,
+  },
+  {
+    pathname: "/drivers",
+    label: "Chauffeurs",
+    icon: <FontAwesomeIcon icon={faIdBadge} />,
   },
   {
     pathname: "/planned-trips",
@@ -84,14 +90,46 @@ const links: LinkWithIcon[] = [
 ];
 
 export default function CooperativePanelSideNav() {
+  const { authUser } = useAuthModel();
+
+  let cooperative: Cooperative | null = null;
+  if (authUser?.cooperativeRole && authUser.cooperativeRole !== "none") {
+    switch (authUser.cooperativeRole) {
+      case "DRIVER":
+        cooperative = authUser.coopDriverAccount.cooperative;
+        break;
+      case "MANAGER":
+        cooperative = authUser.coopManagerAccounts[0].cooperative;
+        break;
+      case "REGULATOR":
+        cooperative = authUser.coopRegulatorAccount.cooperative;
+        break;
+      default:
+        break;
+    }
+  }
+
   return (
     <nav>
-      <Separator orientation="horizontal" />
-      <h2 id="app-sidenav-title" className="font-medium text-foreground text-lg mb-3">
+      <h2 id="app-sidenav-title" className="font-semibold text-foreground/60 mb-3 px-3">
         Espace coopérative
       </h2>
-      <Separator orientation="horizontal" />
-      <ul className="list-none m-0 p-0">
+      <div className="flex flex-col items-center mb-3 px-3">
+        {cooperative && (
+          <>
+            <img
+              src={cooperative.profilePhoto}
+              alt={cooperative.coopName}
+              className="[max-width:200px] max-h-52"
+            />
+            <h2 className="mt-3 font-semibold text-foreground text-sm">{cooperative.coopName}</h2>
+          </>
+        )}
+      </div>
+      <div className="px-3">
+        <Separator className="mb-3" />
+      </div>
+      <ul className="list-none m-0 py-0 px-1">
         {links.map((link) => (
           <li key={link.pathname}>
             <NavLink
