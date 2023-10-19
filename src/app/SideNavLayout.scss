@@ -19,12 +19,25 @@
 
   .app-sidenav-box {
     width: var(--sidenav-width);
+    overflow: auto;
+  
+    &::-webkit-scrollbar {
+      width: 0.375rem; /* 6px */
+    }
+  
+    &::-webkit-scrollbar-track {
+      background-color: hsl(var(--background-dark) / 100%);
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      background-color: hsl(var(--foreground) / 30%);
+    }
 
     &.slide-in {
       animation: sidenav-side-in 100ms 100ms both;
     }
   }
-  
+
   /* 1151px */
   @media only screen and (min-width: 71.9375rem) {
     &:not(.fixed-desktop) {
@@ -46,7 +59,7 @@
 
       .app-sidenav-box {
         box-shadow: none;
-        border-right: 1px solid #e5e7eb;
+        border-right: 1px solid hsl(var(--border) / 100%);
         position: fixed;
       }
 
