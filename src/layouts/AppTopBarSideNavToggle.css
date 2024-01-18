@@ -1,0 +1,7 @@
+#top-bar-sidenav-toggle-paths {
+  stroke: hsl(var(--foreground) / 60%);
+  transition: 400ms;
+}
+button#top-bar-sidenav-toggle:hover #top-bar-sidenav-toggle-paths {
+  stroke: hsl(var(--foreground) / 80%);
+}

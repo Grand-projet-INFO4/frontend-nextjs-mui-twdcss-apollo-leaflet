@@ -1,0 +1,43 @@
+:root {
+  --topbar-height: calc(3.75rem); /* 60px */
+}
+
+.top-bar-show-lg,
+.top-bar-show-flex-lg,
+.top-bar-show-md,
+.top-bar-show-sm {
+  display: none !important;
+}
+
+.top-bar-hide-lg {
+  display: block;
+}
+
+/* 556px */
+@media only screen and (min-width: 34.75rem) {
+  .top-bar-show-sm {
+    display: block !important;
+  }
+}
+
+/* 776px */
+@media only screen and (min-width: 48.5rem) {
+  .top-bar-show-md {
+    display: block !important;
+  }
+}
+
+/* 1151px */
+@media only screen and (min-width: 71.9375rem) {
+  .top-bar-show-lg {
+    display: block !important;
+  }
+
+  .top-bar-show-flex-lg {
+    display: flex !important;
+  }
+
+  .top-bar-hide-lg {
+    display: none;
+  }
+}

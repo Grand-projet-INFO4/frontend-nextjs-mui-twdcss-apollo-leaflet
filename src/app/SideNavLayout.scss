@@ -1,0 +1,76 @@
+:root {
+  // Width of the side navigation bar
+  --sidenav-width: 18rem; /* 288px */
+}
+
+#app-sidenav-layout {
+  display: none;
+  width: 100%;
+
+  &.open {
+    display: block;
+  }
+
+  .app-sidenav-backdrop {
+    &.fade-in {
+      animation: sidenav-fade-in 200ms both;
+    }
+  }
+
+  .app-sidenav-box {
+    width: var(--sidenav-width);
+
+    &.slide-in {
+      animation: sidenav-side-in 100ms 100ms both;
+    }
+  }
+  
+  /* 1151px */
+  @media only screen and (min-width: 71.9375rem) {
+    &:not(.fixed-desktop) {
+      display: none;
+    }
+
+    &.fixed-desktop {
+      display: block;
+      width: var(--sidenav-width);
+      position: relative;
+
+      &.open {
+        display: block;
+      }
+
+      .app-sidenav-backdrop {
+        display: none;
+      }
+
+      .app-sidenav-box {
+        box-shadow: none;
+        border-right: 1px solid #e5e7eb;
+        position: fixed;
+      }
+
+      #app-sidenav-close {
+        display: none;
+      }
+    }
+  }
+}
+
+@keyframes sidenav-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sidenav-side-in {
+  from {
+    translate: -100% 0;
+  }
+  to {
+    opacity: 0 0;
+  }
+}
